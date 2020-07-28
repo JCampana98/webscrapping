@@ -1,0 +1,35 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <nav class="navbar fixed-top navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">
+            <i class="fas fa-money-bill-wave"></i>
+            Dollar Now
+        </span>
+        {% if user.is_authenticated %}
+            <ul class="nav navbar-nav nav-flex-icons ml-auto">
+                <li class="nav-item">
+                    <a class="btn btn-danger" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i> Logout </a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                &nbsp; Bienvenido, {{ user.username }}!.
+            </span>
+        {% else %}
+            <a class="btn btn-warning" href="{% url 'signup' %}" role="button"><i class="fas fa-user-friends"></i> Register </a>
+            <a class="btn btn-primary" href="{% url 'login' %}" role="button"><i class="fas fa-user"></i> Login </a>
+            <span class="navbar-text">
+                &nbsp; Usted no ha iniciado sesión.
+            </span>
+        {% endif %}
+    </nav>
+    <header class="bg-success text-white text-center" style="margin-top: 5%">
+            <div class="container d-flex align-items-center flex-column">
+                <img class="mb-5" style="width: 30%" src="https://cdn.pixabay.com/photo/2017/11/08/22/27/dollar-2931882_960_720.png" alt="">
+                <h1 class="mb-0">Dolar Now</h1>
+            </div>
+    </header>
+{% endblock %}
