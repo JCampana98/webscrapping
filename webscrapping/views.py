@@ -1,11 +1,21 @@
-from django.shortcuts import render
 from django.contrib.auth import login, authenticate
+from django.utils.datetime_safe import datetime
+
 from .forms import SignUpForm
 from django.shortcuts import render, redirect
 
+from webscrapping.models import Dollar
+from django.conf import settings
+from django.utils.timezone import make_aware
+
 
 def home_view(request):
-    return render(request, 'home.html')
+    today = make_aware(datetime.today())
+    dollars = Dollar.objects.all()
+    today_dollars = Dollar.objects.filter(issue_date__day=today.day,
+                                          issue_date__month=today.month,
+                                          issue_date__year=today.year)
+    return render(request, 'home.html', {'today_dollars': today_dollars, 'dollars': dollars})
 
 
 def signup_view(request):

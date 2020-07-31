@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils.timezone import now
 
 
 class Type(models.Model):
@@ -27,8 +26,11 @@ class Dollar(models.Model):
         unique_together = ('issue_date', 'origin')
 
 
-class CustomUser(AbstractUser):
-    # add additional fields in here
+class Request(models.Model):
+    value = models.DecimalField(verbose_name="valor", decimal_places=2, max_digits=30)
+    mail = models.EmailField(verbose_name="mail")
+    notified = models.BooleanField(verbose_name="notificado", default="false")
 
-    def __str__(self):
-        return self.email
+    class Meta:
+        verbose_name = "petición"
+        verbose_name_plural = "peticiones"
