@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 
 class Type(models.Model):
@@ -21,6 +20,7 @@ class Dollar(models.Model):
     origin = models.CharField(verbose_name="origen del precio", max_length=200)
 
     class Meta:
+        ordering = ["issue_date"]
         verbose_name = "dólar"
         verbose_name_plural = "dólares"
         unique_together = ('issue_date', 'origin')
@@ -29,7 +29,7 @@ class Dollar(models.Model):
 class Request(models.Model):
     value = models.DecimalField(verbose_name="valor", decimal_places=2, max_digits=30)
     mail = models.EmailField(verbose_name="mail")
-    notified = models.BooleanField(verbose_name="notificado", default="false")
+    notified = models.BooleanField(verbose_name="notificado", default=False)
 
     class Meta:
         verbose_name = "petición"

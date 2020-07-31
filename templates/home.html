@@ -4,8 +4,8 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <nav class="navbar fixed-top navbar-dark bg-dark">
-        <span class="navbar-brand mb-0 h1">
+    <nav class="navbar d-flex fixed-top navbar-dark bg-dark justify-content-end">
+        <span class="navbar-brand mb-0 h1 mr-auto">
             <i class="fas fa-money-bill-wave"></i>
             Dollar Now
         </span>
@@ -20,81 +20,219 @@
                 &nbsp; Bienvenido, {{ user.username }}!
             </span>
         {% else %}
-            <a class="btn btn-warning" href="{% url 'signup' %}" role="button"><i class="fas fa-user-friends"></i>
-                Register </a>
-            <a class="btn btn-primary" href="{% url 'login' %}" role="button"><i class="fas fa-user"></i> Login </a>
             <span class="navbar-text">
-                &nbsp; Usted no ha iniciado sesión.
+                &nbsp; Usted no ha iniciado sesión. &nbsp; &nbsp;
             </span>
+            <a class="btn btn-warning" href="{% url 'signup' %}" role="button"><i class="fas fa-user-friends"></i>
+                Register </a> &nbsp;
+            <a class="btn btn-primary" href="{% url 'login' %}" role="button"><i class="fas fa-user"></i> Login </a>
         {% endif %}
     </nav>
-    <header class="bg-success text-white text-center" style="margin-top: 5%">
+    <header class="bg-success text-white text-center page-header">
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
         <div class="container d-flex align-items-center flex-column">
             <img class="mb-5" style="width: 30%"
                  src="https://cdn.pixabay.com/photo/2017/11/08/22/27/dollar-2931882_960_720.png" alt="">
-            <h1 class="mb-0">Dolar Now</h1>
+            <h1 class="mb-0"><strong>Dolar Now</strong></h1>
+            <br/>
         </div>
     </header>
-
-    {% if message %}
-        <h2>{{ message }}</h2>
-    {% endif %}
-    {% if not not_available %}
-    <div>
-        <table>
-            <tr>
-                <th>Día</th>
-                <th>Tipo</th>
-                <th>Origen</th>
-                <th>Compra</th>
-                <th>Venta</th>
-                <th>Promedio</th>
-            </tr>
-            {% for dollar in today_dollars %}
-                <tr>
-                    <td>{{ dollar.issue_date|date:"d-m-Y" }}</td>
-                    <td>{{ dollar.dollar_type.name }}</td>
-                    <td>{{ dollar.origin }}</td>
-                    <td>$ {{ dollar.buy_price }}</td>
-                    <td>$ {{ dollar.sell_price }}</td>
-                    <td>$ {{ dollar.average }}</td>
-                </tr>
-            {% endfor %}
-        </table>
+            <br/>
+    <div class="container jumbotron bg-success">
+        <div class="row card-columns">
+            <div class="col-12 alert alert-warning" role="alert">
+                {% if message %}
+                    <h2>{{ message }}</h2>
+                {% endif %}
+            </div>
+            {% if not not_available %}
+                {% for dollar in today_dollars %}
+                    <div class="card col" style="width: 18rem;">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ dollar.origin }}</h2>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><h5><strong>{{ dollar.dollar_type.name }}</strong></h5></li>
+                            <li class="list-group-item"><strong> Precio Compra: </strong> $ {{ dollar.buy_price }}</li>
+                            <li class="list-group-item"><strong> Precio Venta: </strong> $ {{ dollar.sell_price }}</li>
+                        </ul>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="container jumbotron bg-primary">
+        <h2>Desea que le avisemos cuando el dolar pase cierto valor?</h2>
+        <form action="{% url 'home' %}" method="post">
+            {% csrf_token %}
+            <div class="fieldWrapper">
+                {{ form.value.errors }}
+                <label for="{{ form.value.id_for_label }}">Valor al que avisar:</label>
+                {{ form.value }}
+            </div>
+            <div class="fieldWrapper">
+                {{ form.mail.errors }}
+                <label for="{{ form.mail.id_for_label }}">Your email address:</label>
+                {{ form.mail }}
+            </div>
+            <input type="submit" value="Submit">
+        </form>
     </div>
     {% endif %}
-    <div>
-        <canvas id="dolar"></canvas>
-    </div>
-    <script>
-        var ctx = document.getElementById('dolar').getContext('2d');
-        var chart = new Chart(ctx, {
-            // The type of chart we want to create
-            type: 'line',
+    <div class="container jumbotron bg-dark">
+        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active bg-light">
+                    <canvas id="dolarbna"></canvas>
+                </div>
+                <div class="carousel-item bg-light">
+                    <canvas id="dolarhoy"></canvas>
+                </div>
+                <div class="carousel-item bg-light">
+                    <canvas id="dolarln"></canvas>
+                </div>
+                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+        <script>
+            var ctx = document.getElementById('dolarbna').getContext('2d');
+            var chart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'line',
 
-            // The data for our dataset
-            data: {
-                labels: [{% for dollar in dollars %}
+                // The data for our dataset
+                data: {
+                    labels: [{% for dollar in dollars %}
+                        {% if dollar.origin == 'Banco Nación' %}
                             '{{ dollar.issue_date|date:"d-m-Y" }}',
-                        {% endfor %}],
-                datasets: [{
-                    label: 'Precio de Venta',
-                    borderColor: 'rgb(70,0,231)',
-                    data: [{% for dollar in dollars %}
-                        '{{ dollar.sell_price }}',
-                    {% endfor %}]
+                        {% endif %}
+                    {% endfor %}],
+                    datasets: [{
+                        label: 'Precio de Venta',
+                        borderColor: 'rgb(70,0,231)',
+                        data: [{% for dollar in dollars %}
+                            {% if dollar.origin == 'Banco Nación' %}
+                                '{{ dollar.sell_price }}',
+                            {% endif %}
+                        {% endfor %}]
+                    },
+                        {
+                            label: 'Precio de Compra',
+                            borderColor: 'rgb(243,0,22)',
+                            data: [{% for dollar in dollars %}
+                                {% if dollar.origin == 'Banco Nación' %}
+                                    '{{ dollar.buy_price }}',
+                                {% endif %}
+                            {% endfor %}]
+                        }]
                 },
-                {
-                    label: 'Precio de Compra',
-                    borderColor: 'rgb(243,0,22)',
-                    data: [{% for dollar in dollars %}
-                        '{{ dollar.buy_price }}',
-                    {% endfor %}]
-                }]
-            },
 
-            // Configuration options go here
-            options: {}
-        });
-    </script>
+                // Configuration options go here
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Dólar Banco Nación',
+                        fontSize: 25
+                    }
+                }
+            });
+        </script>
+        <script>
+            var ctx = document.getElementById('dolarhoy').getContext('2d');
+            var chart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'line',
+
+                // The data for our dataset
+                data: {
+                    labels: [{% for dollar in dollars %}
+                        {% if dollar.origin == 'DolarHoy.com' %}
+                            '{{ dollar.issue_date|date:"d-m-Y" }}',
+                        {% endif %}
+                    {% endfor %}],
+                    datasets: [{
+                        label: 'Precio de Venta',
+                        borderColor: 'rgb(70,0,231)',
+                        data: [{% for dollar in dollars %}
+                            {% if dollar.origin == 'DolarHoy.com' %}
+                                '{{ dollar.sell_price }}',
+                            {% endif %}
+                        {% endfor %}]
+                    },
+                        {
+                            label: 'Precio de Compra',
+                            borderColor: 'rgb(243,0,22)',
+                            data: [{% for dollar in dollars %}
+                                {% if dollar.origin == 'DolarHoy.com' %}
+                                    '{{ dollar.buy_price }}',
+                                {% endif %}
+                            {% endfor %}]
+                        }]
+                },
+
+                // Configuration options go here
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Dólar DolarHoy.com',
+                        fontSize: 25
+                    }
+                }
+            });
+        </script>
+        <script>
+            var ctx = document.getElementById('dolarln').getContext('2d');
+            var chart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'line',
+
+                // The data for our dataset
+                data: {
+                    labels: [{% for dollar in dollars %}
+                        {% if dollar.origin == 'La Nacion' %}
+                            '{{ dollar.issue_date|date:"d-m-Y" }}',
+                        {% endif %}
+                    {% endfor %}],
+                    datasets: [{
+                        label: 'Precio de Venta',
+                        borderColor: 'rgb(70,0,231)',
+                        data: [{% for dollar in dollars %}
+                            {% if dollar.origin == 'La Nacion' %}
+                                '{{ dollar.sell_price }}',
+                            {% endif %}
+                        {% endfor %}]
+                    },
+                        {
+                            label: 'Precio de Compra',
+                            borderColor: 'rgb(243,0,22)',
+                            data: [{% for dollar in dollars %}
+                                {% if dollar.origin == 'La Nacion' %}
+                                    '{{ dollar.buy_price }}',
+                                {% endif %}
+                            {% endfor %}]
+                        }]
+                },
+
+                // Configuration options go here
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Dólar La Nación',
+                        fontSize: 25
+                    }
+                }
+            });
+        </script>
 {% endblock %}

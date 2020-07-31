@@ -10,3 +10,8 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2', )
+
+
+class RequestForm(forms.Form):
+    value = forms.DecimalField(decimal_places=2, max_digits=30)
+    mail = forms.EmailField()

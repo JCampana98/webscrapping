@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from webscrapping.models import Type, Dollar
+from webscrapping.models import Type, Dollar, Request
 
 
 class TypeAdmin(admin.ModelAdmin):
@@ -13,5 +13,10 @@ class DollarAdmin(admin.ModelAdmin):
     search_fields = ('origin', 'buy_price', 'sell_price')
 
 
+class RequestAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Dollar, DollarAdmin)
+admin.site.register(Request, RequestAdmin)
