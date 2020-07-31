@@ -124,3 +124,11 @@ STATIC_URL = '/assets/'
 LOGIN_REDIRECT_URL = 'home'
 
 LOGOUT_REDIRECT_URL = 'home'
+
+#No usar mail de la facultad en Deploy, solo para prueba
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'j.campana@alumno.um.edu.ar'
+EMAIL_HOST_PASSWORD = 'Lordreshiram123'
