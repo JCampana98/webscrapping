@@ -1,6 +1,10 @@
 from django.db import models
+from django.utils.timezone import now
+from bs4 import BeautifulSoup
+from decimal import Decimal
+from datetime import datetime
 from django.contrib.auth.models import AbstractUser
-
+import requests
 
 class Type(models.Model):
     name = models.CharField(verbose_name="nombre del tipo de dólar", max_length=16, unique=True)
@@ -24,6 +28,29 @@ class Dollar(models.Model):
         verbose_name = "dólar"
         verbose_name_plural = "dólares"
         unique_together = ('issue_date', 'origin')
+
+    def scraping(self):
+        url = 'https://drdolar.com/cotizaciones/bancos'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        for row in soup.findAll('table')[6].tbody.findAll('tr'):
+            self.buy_price = row.findAll('td')[1].text
+            self.buy_price = self.buy_price[1: 6]
+            self.sell_price = row.findAll('td')[3].text[0:6]
+            self.sell_price = self.sell_price[1: 6]
+            self.dollar_type = Type.objects.get(name="oficial")
+            self.origin = row.findAll('td')[0].text
+            self.issue_date = datetime.now()
+
+            event1 = Dollar(
+                dollar_type=Type.objects.get(name="oficial"),
+                buy_price=Decimal(self.buy_price.replace(',', '.')),
+                sell_price=Decimal(self.sell_price.replace(',', '.')),
+                origin = row.findAll('td')[0].text,
+                issue_date=datetime.now(),
+            )
+            event1.save()
 
 
 class Request(models.Model):

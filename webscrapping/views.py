@@ -3,19 +3,24 @@ from django.utils.datetime_safe import datetime
 
 from .forms import SignUpForm
 from django.shortcuts import render, redirect
-
-from webscrapping.models import Dollar
+from .models import Type, Dollar
 from django.conf import settings
 from django.utils.timezone import make_aware
+import requests
 
 
 def home_view(request):
+    dollar_object_oficial = Dollar()
+    dollar_object_oficial.scraping()
+
+
+
     today = make_aware(datetime.today())
     dollars = Dollar.objects.all()
     today_dollars = Dollar.objects.filter(issue_date__day=today.day,
                                           issue_date__month=today.month,
                                           issue_date__year=today.year)
-    return render(request, 'home.html', {'today_dollars': today_dollars, 'dollars': dollars})
+    return render(request, 'home.html', {'today_dollars': today_dollars, 'dollars': dollars, 'dollar_object_oficial': dollar_object_oficial})
 
 
 def signup_view(request):
