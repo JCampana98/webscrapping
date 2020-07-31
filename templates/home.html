@@ -35,6 +35,11 @@
             <h1 class="mb-0">Dolar Now</h1>
         </div>
     </header>
+
+    {% if message %}
+        <h2>{{ message }}</h2>
+    {% endif %}
+    {% if not not_available %}
     <div>
         <table>
             <tr>
@@ -57,6 +62,7 @@
             {% endfor %}
         </table>
     </div>
+    {% endif %}
     <div>
         <canvas id="dolar"></canvas>
     </div>
@@ -73,14 +79,14 @@
                         {% endfor %}],
                 datasets: [{
                     label: 'Precio de Venta',
-                    borderColor: 'rgb(87, 36, 205)',
+                    borderColor: 'rgb(70,0,231)',
                     data: [{% for dollar in dollars %}
                         '{{ dollar.sell_price }}',
                     {% endfor %}]
                 },
                 {
                     label: 'Precio de Compra',
-                    borderColor: 'rgb(235, 0, 22)',
+                    borderColor: 'rgb(243,0,22)',
                     data: [{% for dollar in dollars %}
                         '{{ dollar.buy_price }}',
                     {% endfor %}]
