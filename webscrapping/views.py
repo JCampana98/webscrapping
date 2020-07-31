@@ -1,7 +1,6 @@
 from django.contrib.auth import login, authenticate
 from django.utils.datetime_safe import datetime
 from django.utils.timezone import make_aware
-from django.http import HttpResponseRedirect
 from datetime import timedelta
 
 from .forms import SignUpForm, RequestForm
@@ -41,7 +40,7 @@ def home_view(request):
             return render(request, 'home.html', {'message': 'No hay información reciente sobre el dolar',
                                                  'not_available': '', 'form': form})
         else:
-            return render(request, 'home.html', {'today_dollars': dollars, 'dollars': dollars, 'form': form})
+            return render(request, 'home.html', {'today_dollars': today_dollars, 'dollars': dollars, 'form': form})
 
 
 def signup_view(request):

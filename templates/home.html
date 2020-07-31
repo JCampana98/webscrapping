@@ -41,17 +41,17 @@
             <br/>
         </div>
     </header>
-            <br/>
+    <br/>
     <div class="container jumbotron bg-success">
-        <div class="row card-columns">
-            <div class="col-12 alert alert-warning" role="alert">
-                {% if message %}
+        <div class="row card-columns d-flex justify-content-around">
+            {% if message %}
+                <div class="col-12 alert alert-warning" role="alert">
                     <h2>{{ message }}</h2>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
             {% if not not_available %}
                 {% for dollar in today_dollars %}
-                    <div class="card col" style="width: 18rem;">
+                    <div class="card col-3 align-center">
                         <div class="card-body">
                             <h2 class="card-title">{{ dollar.origin }}</h2>
                         </div>
@@ -66,23 +66,23 @@
         </div>
     </div>
     {% if user.is_authenticated %}
-    <div class="container jumbotron bg-primary">
-        <h2>Desea que le avisemos cuando el dolar pase cierto valor?</h2>
-        <form action="{% url 'home' %}" method="post">
-            {% csrf_token %}
-            <div class="fieldWrapper">
-                {{ form.value.errors }}
-                <label for="{{ form.value.id_for_label }}">Valor al que avisar:</label>
-                {{ form.value }}
-            </div>
-            <div class="fieldWrapper">
-                {{ form.mail.errors }}
-                <label for="{{ form.mail.id_for_label }}">Your email address:</label>
-                {{ form.mail }}
-            </div>
-            <button type="submit" class="btn btn-dark">Submit</button>
-        </form>
-    </div>
+        <div class="container jumbotron bg-primary">
+            <h2>Desea que le avisemos cuando el dolar pase cierto valor?</h2>
+            <form action="{% url 'home' %}" method="post">
+                {% csrf_token %}
+                <div class="fieldWrapper">
+                    {{ form.value.errors }}
+                    <label for="{{ form.value.id_for_label }}">Valor al que avisar:</label>
+                    {{ form.value }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.mail.errors }}
+                    <label for="{{ form.mail.id_for_label }}">Your email address:</label>
+                    {{ form.mail }}
+                </div>
+                <button type="submit" class="btn btn-dark">Submit</button>
+            </form>
+        </div>
     {% endif %}
     <div class="container jumbotron bg-dark">
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
@@ -91,10 +91,10 @@
                     <canvas id="dolarbna"></canvas>
                 </div>
                 <div class="carousel-item bg-light">
-                    <canvas id="dolarhoy"></canvas>
+                    <canvas id="bbva"></canvas>
                 </div>
                 <div class="carousel-item bg-light">
-                    <canvas id="dolarln"></canvas>
+                    <canvas id="dolarbr"></canvas>
                 </div>
                 <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -150,7 +150,7 @@
             });
         </script>
         <script>
-            var ctx = document.getElementById('dolarhoy').getContext('2d');
+            var ctx = document.getElementById('bbva').getContext('2d');
             var chart = new Chart(ctx, {
                 // The type of chart we want to create
                 type: 'line',
@@ -158,7 +158,7 @@
                 // The data for our dataset
                 data: {
                     labels: [{% for dollar in dollars %}
-                        {% if dollar.origin == 'DolarHoy.com' %}
+                        {% if dollar.origin == 'Banco Frances' %}
                             '{{ dollar.issue_date|date:"d-m-Y" }}',
                         {% endif %}
                     {% endfor %}],
@@ -166,7 +166,7 @@
                         label: 'Precio de Venta',
                         borderColor: 'rgb(70,0,231)',
                         data: [{% for dollar in dollars %}
-                            {% if dollar.origin == 'DolarHoy.com' %}
+                            {% if dollar.origin == 'Banco Frances' %}
                                 '{{ dollar.sell_price }}',
                             {% endif %}
                         {% endfor %}]
@@ -175,7 +175,7 @@
                             label: 'Precio de Compra',
                             borderColor: 'rgb(243,0,22)',
                             data: [{% for dollar in dollars %}
-                                {% if dollar.origin == 'DolarHoy.com' %}
+                                {% if dollar.origin == 'Banco Frances' %}
                                     '{{ dollar.buy_price }}',
                                 {% endif %}
                             {% endfor %}]
@@ -186,14 +186,14 @@
                 options: {
                     title: {
                         display: true,
-                        text: 'Dólar DolarHoy.com',
+                        text: 'Dólar Banco Frances',
                         fontSize: 25
                     }
                 }
             });
         </script>
         <script>
-            var ctx = document.getElementById('dolarln').getContext('2d');
+            var ctx = document.getElementById('dolarbr').getContext('2d');
             var chart = new Chart(ctx, {
                 // The type of chart we want to create
                 type: 'line',
@@ -201,7 +201,7 @@
                 // The data for our dataset
                 data: {
                     labels: [{% for dollar in dollars %}
-                        {% if dollar.origin == 'La Nacion' %}
+                        {% if dollar.origin == 'Brubank' %}
                             '{{ dollar.issue_date|date:"d-m-Y" }}',
                         {% endif %}
                     {% endfor %}],
@@ -209,7 +209,7 @@
                         label: 'Precio de Venta',
                         borderColor: 'rgb(70,0,231)',
                         data: [{% for dollar in dollars %}
-                            {% if dollar.origin == 'La Nacion' %}
+                            {% if dollar.origin == 'Brubank' %}
                                 '{{ dollar.sell_price }}',
                             {% endif %}
                         {% endfor %}]
@@ -218,7 +218,7 @@
                             label: 'Precio de Compra',
                             borderColor: 'rgb(243,0,22)',
                             data: [{% for dollar in dollars %}
-                                {% if dollar.origin == 'La Nacion' %}
+                                {% if dollar.origin == 'Brubank' %}
                                     '{{ dollar.buy_price }}',
                                 {% endif %}
                             {% endfor %}]
@@ -229,7 +229,7 @@
                 options: {
                     title: {
                         display: true,
-                        text: 'Dólar La Nación',
+                        text: 'Dólar Brubank',
                         fontSize: 25
                     }
                 }

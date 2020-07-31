@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Type(models.Model):
     name = models.CharField(verbose_name="nombre del tipo de dólar", max_length=16, unique=True)
 
