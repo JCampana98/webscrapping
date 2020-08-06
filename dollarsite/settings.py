@@ -125,7 +125,7 @@ LOGIN_REDIRECT_URL = 'home'
 
 LOGOUT_REDIRECT_URL = 'home'
 
-#No usar mail de la facultad en Deploy, solo para prueba
+# No usar mail de la facultad en Deploy, solo para prueba
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True

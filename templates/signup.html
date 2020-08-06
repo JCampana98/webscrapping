@@ -3,6 +3,7 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
+    </br>
     <div class="container jumbotron bg-primary align-middle">
         <h2>Register</h2>
         <form method="post">
@@ -12,14 +13,19 @@
                     {{ field.label_tag }}<br>
                     {{ field }}
                     {% if field.help_text %}
-                        <div class="container jumbotron bg-light">
+                        <div class="alert alert-warning" role="alert">
                             <small style="color: grey">{{ field.help_text }}</small>
                         </div>
                     {% endif %}
-                    {% for error in field.errors %}
-                        <p style="color: red">{{ error }}</p>
-                    {% endfor %}
-                </p>
+                {% for error in field.errors %}
+                    <p>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ error }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
             {% endfor %}
             <button type="submit" class="btn btn-dark">Sign up</button>
         </form>

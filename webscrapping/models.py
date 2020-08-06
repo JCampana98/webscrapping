@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Type(models.Model):
     name = models.CharField(verbose_name="nombre del tipo de dólar", max_length=16, unique=True)
 
@@ -24,6 +25,9 @@ class Dollar(models.Model):
         verbose_name_plural = "dólares"
         unique_together = ('issue_date', 'origin')
 
+    def __str__(self):
+        return f"Dólar {self.origin}: {self.buy_price:.3f} - {self.sell_price:.3f}"
+
 
 class Request(models.Model):
     value = models.DecimalField(verbose_name="valor", decimal_places=2, max_digits=30)
@@ -33,3 +37,6 @@ class Request(models.Model):
     class Meta:
         verbose_name = "petición"
         verbose_name_plural = "peticiones"
+
+    def __str__(self):
+        return f"Peticion {self.value}: {self.mail}"

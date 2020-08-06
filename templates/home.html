@@ -37,7 +37,7 @@
         <div class="container d-flex align-items-center flex-column">
             <img class="mb-5" style="width: 30%"
                  src="https://cdn.pixabay.com/photo/2017/11/08/22/27/dollar-2931882_960_720.png" alt="">
-            <h1 class="mb-0"><strong>Dolar Now</strong></h1>
+            <h1 class="mb-0"><strong>Dollar Now</strong></h1>
             <br/>
         </div>
     </header>
@@ -62,6 +62,16 @@
                         </ul>
                     </div>
                 {% endfor %}
+                    <div class="card col-3 align-center">
+                        <div class="card-body">
+                            <h2 class="card-title">Estadísticas de Precio de Compra</h2>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong> Promedio: </strong> $ {{ mean }}</li>
+                            <li class="list-group-item"><strong> Minimo: </strong> $ {{ min }}</li>
+                            <li class="list-group-item"><strong> Maximo: </strong> $ {{ max }}</li>
+                        </ul>
+                    </div>
             {% endif %}
         </div>
     </div>
@@ -106,133 +116,134 @@
                 </a>
             </div>
         </div>
-        <script>
-            var ctx = document.getElementById('dolarbna').getContext('2d');
-            var chart = new Chart(ctx, {
-                // The type of chart we want to create
-                type: 'line',
+    </div>
+    <script>
+        var ctx = document.getElementById('dolarbna').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
 
-                // The data for our dataset
-                data: {
-                    labels: [{% for dollar in dollars %}
+            // The data for our dataset
+            data: {
+                labels: [{% for dollar in dollars %}
+                    {% if dollar.origin == 'Banco Nación' %}
+                        '{{ dollar.issue_date|date:"d-m-Y" }}',
+                    {% endif %}
+                {% endfor %}],
+                datasets: [{
+                    label: 'Precio de Venta',
+                    borderColor: 'rgb(70,0,231)',
+                    data: [{% for dollar in dollars %}
                         {% if dollar.origin == 'Banco Nación' %}
-                            '{{ dollar.issue_date|date:"d-m-Y" }}',
+                            '{{ dollar.sell_price }}',
                         {% endif %}
-                    {% endfor %}],
-                    datasets: [{
-                        label: 'Precio de Venta',
-                        borderColor: 'rgb(70,0,231)',
+                    {% endfor %}]
+                },
+                    {
+                        label: 'Precio de Compra',
+                        borderColor: 'rgb(243,0,22)',
                         data: [{% for dollar in dollars %}
                             {% if dollar.origin == 'Banco Nación' %}
-                                '{{ dollar.sell_price }}',
+                                '{{ dollar.buy_price }}',
                             {% endif %}
                         {% endfor %}]
-                    },
-                        {
-                            label: 'Precio de Compra',
-                            borderColor: 'rgb(243,0,22)',
-                            data: [{% for dollar in dollars %}
-                                {% if dollar.origin == 'Banco Nación' %}
-                                    '{{ dollar.buy_price }}',
-                                {% endif %}
-                            {% endfor %}]
-                        }]
-                },
+                    }]
+            },
 
-                // Configuration options go here
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Dólar Banco Nación',
-                        fontSize: 25
-                    }
+            // Configuration options go here
+            options: {
+                title: {
+                    display: true,
+                    text: 'Dólar Banco Nación',
+                    fontSize: 25
                 }
-            });
-        </script>
-        <script>
-            var ctx = document.getElementById('bbva').getContext('2d');
-            var chart = new Chart(ctx, {
-                // The type of chart we want to create
-                type: 'line',
+            }
+        });
+    </script>
+    <script>
+        var ctx = document.getElementById('bbva').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
 
-                // The data for our dataset
-                data: {
-                    labels: [{% for dollar in dollars %}
+            // The data for our dataset
+            data: {
+                labels: [{% for dollar in dollars %}
+                    {% if dollar.origin == 'Banco Frances' %}
+                        '{{ dollar.issue_date|date:"d-m-Y" }}',
+                    {% endif %}
+                {% endfor %}],
+                datasets: [{
+                    label: 'Precio de Venta',
+                    borderColor: 'rgb(70,0,231)',
+                    data: [{% for dollar in dollars %}
                         {% if dollar.origin == 'Banco Frances' %}
-                            '{{ dollar.issue_date|date:"d-m-Y" }}',
+                            '{{ dollar.sell_price }}',
                         {% endif %}
-                    {% endfor %}],
-                    datasets: [{
-                        label: 'Precio de Venta',
-                        borderColor: 'rgb(70,0,231)',
+                    {% endfor %}]
+                },
+                    {
+                        label: 'Precio de Compra',
+                        borderColor: 'rgb(243,0,22)',
                         data: [{% for dollar in dollars %}
                             {% if dollar.origin == 'Banco Frances' %}
-                                '{{ dollar.sell_price }}',
+                                '{{ dollar.buy_price }}',
                             {% endif %}
                         {% endfor %}]
-                    },
-                        {
-                            label: 'Precio de Compra',
-                            borderColor: 'rgb(243,0,22)',
-                            data: [{% for dollar in dollars %}
-                                {% if dollar.origin == 'Banco Frances' %}
-                                    '{{ dollar.buy_price }}',
-                                {% endif %}
-                            {% endfor %}]
-                        }]
-                },
+                    }]
+            },
 
-                // Configuration options go here
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Dólar Banco Frances',
-                        fontSize: 25
-                    }
+            // Configuration options go here
+            options: {
+                title: {
+                    display: true,
+                    text: 'Dólar Banco Frances',
+                    fontSize: 25
                 }
-            });
-        </script>
-        <script>
-            var ctx = document.getElementById('dolarbr').getContext('2d');
-            var chart = new Chart(ctx, {
-                // The type of chart we want to create
-                type: 'line',
+            }
+        });
+    </script>
+    <script>
+        var ctx = document.getElementById('dolarbr').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
 
-                // The data for our dataset
-                data: {
-                    labels: [{% for dollar in dollars %}
+            // The data for our dataset
+            data: {
+                labels: [{% for dollar in dollars %}
+                    {% if dollar.origin == 'Brubank' %}
+                        '{{ dollar.issue_date|date:"d-m-Y" }}',
+                    {% endif %}
+                {% endfor %}],
+                datasets: [{
+                    label: 'Precio de Venta',
+                    borderColor: 'rgb(70,0,231)',
+                    data: [{% for dollar in dollars %}
                         {% if dollar.origin == 'Brubank' %}
-                            '{{ dollar.issue_date|date:"d-m-Y" }}',
+                            '{{ dollar.sell_price }}',
                         {% endif %}
-                    {% endfor %}],
-                    datasets: [{
-                        label: 'Precio de Venta',
-                        borderColor: 'rgb(70,0,231)',
+                    {% endfor %}]
+                },
+                    {
+                        label: 'Precio de Compra',
+                        borderColor: 'rgb(243,0,22)',
                         data: [{% for dollar in dollars %}
                             {% if dollar.origin == 'Brubank' %}
-                                '{{ dollar.sell_price }}',
+                                '{{ dollar.buy_price }}',
                             {% endif %}
                         {% endfor %}]
-                    },
-                        {
-                            label: 'Precio de Compra',
-                            borderColor: 'rgb(243,0,22)',
-                            data: [{% for dollar in dollars %}
-                                {% if dollar.origin == 'Brubank' %}
-                                    '{{ dollar.buy_price }}',
-                                {% endif %}
-                            {% endfor %}]
-                        }]
-                },
+                    }]
+            },
 
-                // Configuration options go here
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Dólar Brubank',
-                        fontSize: 25
-                    }
+            // Configuration options go here
+            options: {
+                title: {
+                    display: true,
+                    text: 'Dólar Brubank',
+                    fontSize: 25
                 }
-            });
-        </script>
+            }
+        });
+    </script>
 {% endblock %}
